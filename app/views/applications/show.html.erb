@@ -9,29 +9,44 @@
 <h3> Status: <%= @application.status %> </h3>
 </br>
 
-<%= form_with url: "/applications/#{@application.id}", method: :get, local: true do |form| %>
-  <%= form.label :search, "Pet Finder" %>
-  <p> <%= form.text_field :search %> </p>
 
-  <%= form.submit "Find that Pet!" %>
-<% end %>
-</br>
+<% if @application.status == "In progress" %>
+  <%= form_with url: "/applications/#{@application.id}", method: :get, local: true do |form| %>
+      <%= form.label :search, "Pet Finder" %>
+      <p> <%= form.text_field :search %> </p>
 
-<% @pets.each do |pet| %>
-<section id= "searched-pets-<%= pet.id %>"> 
-<h3> Pets Searched for: </h3>
-<p> Name of the pet: <%= pet.name %> </p>
-<p> Pet breed: <%= pet.breed %> </p>
-<p> Age of the pet: <%= pet.age %> </p>
-<p> <%= button_to "Adopt #{pet.name}❤️", "/applications/#{@application.id}/pets?pet_id=#{pet.id}", method: :post %> </p>
-</section>
+      <%= form.submit "Find that Pet!" %>
+    <% end %>
+  </br>
 <% end %>
 
-</br>
+<% if @application.status == "In progress" %>
+  <% @pets.each do |pet| %>
+  <section id= "searched-pets-<%= pet.id %>"> 
+  <h3> Pets Searched for: </h3>
+  <p> Name of the pet: <%= pet.name %> </p>
+  <p> Pet breed: <%= pet.breed %> </p>
+  <p> Age of the pet: <%= pet.age %> </p>
+  <p> <%= button_to "Adopt #{pet.name}❤️", "/applications/#{@application.id}/pets?pet_id=#{pet.id}", method: :post %> </p>
+  </section>
+  <% end %>
+  </br>
+<% end %>
 
 <h1> Pets Applicant has Applied for </h1>
 <% @applicant_pets.each do |pet| %>
-<section id= "associated-pets-<%= pet.id %>"> 
+  <section id= "associated-pets-<%= pet.id %>"> 
   <h3> Name of the pet: <%= link_to "#{pet.name}", "/pets/#{pet.id}" %> </h3>
-</section>
+  </section>
 <% end %>
+</br>
+
+<% if @pet_count > 0 && @application.status == "In progress" %>
+    <%= form_with url: "/applications/#{@application.id}", method: :get, local: true do |form| %>
+    <%= form.label :description, "Why would you make a good pet owner?" %>
+    <p> <%= form.text_field :description %> </p>
+
+    <%= form.submit "Submit Application" %>
+  <% end %>
+  </br>
+<% end %> 

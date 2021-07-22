@@ -1,17 +1,18 @@
 class ApplicationsController < ApplicationController
-  def index
-    @applications = Application.all
-  end
-
+  
   def show
     @application = Application.find(params[:id])
     @applicant_pets = @application.pets
+    @pet_count = @application.pet_count
 
-    if params[:search]
+    if params[:description]
+      @application.status = 1
+    elsif params[:search]
       @pets = Pet.search(params[:search])
     else
       @pets = []
     end
+
   end
 
   def new

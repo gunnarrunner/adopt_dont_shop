@@ -30,8 +30,8 @@ class PetApplicationsController < ApplicationController
     
   # end
   
-private
-  def pet_app_params
-    params.permit(:name, :street_address, :description, :city, :state, :zip_code)
-  end
+# private
+#   def pet_app_params
+#     params.permit(:name, :street_address, :description, :city, :state, :zip_code)
+#   end
 end
