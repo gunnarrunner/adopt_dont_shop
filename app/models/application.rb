@@ -4,11 +4,14 @@ class Application < ApplicationRecord
   validates :city, presence: true
   validates :state, presence: true
   validates :zip_code, presence: true
-  validates :description, presence: true
 
 
   has_many :pet_applications
   has_many :pets, through: :pet_applications
 
   enum status: ["In progress", "Pending", "Accepted", "Rejected"]
+
+  def pet_count
+    pets.size
+  end
 end

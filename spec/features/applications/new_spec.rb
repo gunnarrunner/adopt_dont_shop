@@ -34,7 +34,6 @@ RSpec.describe '' do
     fill_in("City", with: "Arvada")
     fill_in("State", with: "Co")
     fill_in("Zip code", with: "80006")
-    fill_in("Description", with: "I Love animals and make enough money to support them and care for them in any way needed!")
 
     click_button('Submit Application')
 
@@ -51,11 +50,10 @@ RSpec.describe '' do
     fill_in("City", with: "Arvada")
     fill_in("State", with: "Co")
     fill_in("Zip code", with: "80006")
-    fill_in("Description", with: "")
 
     click_button('Submit Application')
     
     expect(current_path).to eq("/applications/new")
-    expect(page).to have_content("Error: Street address can't be blank, Description can't be blank")
+    expect(page).to have_content("Error: Street address can't be blank")
   end
 end

@@ -14,10 +14,10 @@ RSpec.describe 'it can go to the show page of the application table and show its
     @pet3 = Pet.create!(name: "Wishbone", breed: "Jack Russel", age: 3, adoptable: true, shelter_id: @shelter1.id)
     @pet4 = Pet.create!(name: "CoCo", breed: "Black lab", age: 6, adoptable: false, shelter_id: @shelter2.id)
 
-    @application1 = Application.create!(name: "Greg", street_address: "1234 Love Dr", city: "Lakewood", state: "Co", zip_code: "80227", description: "I am a loving owner <3.", status: 0)
-    @application2 = Application.create!(name: "Jojo", street_address: "5678", city: "Lakewood", state: "Co", zip_code: "80227", description: "I demand a dog now.", status: 0)
-    @application3 = Application.create!(name: "Chase", street_address: "9101", city: "Lakewood", state: "Co", zip_code: "80227", description: "I have a house a job and can supply ", status: 0)
-    @application4 = Application.create!(name: "Charlie", street_address: "1213", city: "Lakewood", state: "Co", zip_code: "80227", description: "I have a lovely home with a big backyard and am looking for someone to have fun with", status: 0)
+    @application1 = Application.create!(name: "Greg", street_address: "1234 Love Dr", city: "Lakewood", state: "Co", zip_code: "80227", status: 0)
+    @application2 = Application.create!(name: "Jojo", street_address: "5678", city: "Lakewood", state: "Co", zip_code: "80227", status: 0)
+    @application3 = Application.create!(name: "Chase", street_address: "9101", city: "Lakewood", state: "Co", zip_code: "80227", status: 0)
+    @application4 = Application.create!(name: "Charlie", street_address: "1213", city: "Lakewood", state: "Co", zip_code: "80227", status: 0)
 
     @pet_application1 = PetApplication.create!(application_id: @application1.id, pet_id: @pet1.id)
     @pet_application2 = PetApplication.create!(application_id: @application1.id, pet_id: @pet3.id)
@@ -85,7 +85,51 @@ RSpec.describe 'it can go to the show page of the application table and show its
     end
   end
 
-  it 'can visit and have a ' do
+  it 'can visit and when pets are associated with this application, a text field for a description and a submit button are present' do
+    visit "/applications/#{@application3.id}"
     
+    expect(page).to_not have_button("Submit Application")
+    
+    fill_in('Pet Finder', with: 'Paw')
+    
+    click_button("Find that Pet!")
+
+    click_button("Adopt #{@pet2.name}")
+
+    expect(page).to have_button("Submit Application")
+  end
+
+  it 'after visiting the show page and having pets associated with this application and pressing submit the status is now changed on the show page to pending.' do
+    fill_in('Why would you make a good pet owner?', with: 'I love animals')
+
+    click_button("Submit Application")
+
+    expect(page).to have_content("Status: Pending")
+  end
+
+  it 'can test partial matches and case insensitive searches' do
+
+    fill_in('Pet Finder', with: 'pa')
+    click_button("Find that Pet!")
+
+    within "#searched-pets-#{@pet2.id}" do
+      expect(page).to have_content("#{@pet2.name}")
+      expect(page).to have_content("#{@pet2.breed}")
+      expect(page).to have_content("#{@pet2.age}")
+
+      expect(page).to_not have_content("#{@pet4.name}")
+    end
+
+
+    fill_in('Pet Finder', with: 'pAwS')
+    click_button("Find that Pet!")
+
+    within "#searched-pets-#{@pet2.id}" do
+      expect(page).to have_content("#{@pet2.name}")
+      expect(page).to have_content("#{@pet2.breed}")
+      expect(page).to have_content("#{@pet2.age}")
+
+      expect(page).to_not have_content("#{@pet4.name}")
+    end
   end
 end
